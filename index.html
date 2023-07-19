@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<title>Countdown</title>
+		<meta name="language" content="german">
+		<meta http-equiv="content-language" content="de">
+		<meta name="author" content="Julian Ob.">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+		<script src="js/javascript.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+		<div id="cent">
+			<span id="hea">Zeit bis zum <span id="wh0">1</span>. <span id="anlass0">What so ever</span> von <span id="name0">Wem auch immer:</span> </span>
+		</div>
+		<div id="center">
+			<div>
+				<div class="digit" id="m">
+					<span class="tit">Months</span><br>
+					<div class="flo" id="mon">
+						12
+					</div>
+				</div>
+				<div class="digit" id="d">
+					<span class="tit">Days</span><br>
+					<span class="flo" id="mm">:</span>
+					<div class="flo" id="day">
+						31
+					</div>
+				</div>
+				<div class="digit" id="h">
+					<span class="tit">Hours</span><br>
+					<span class="flo" id="dd">:</span>
+					<div class="flo" id="hour">
+						24
+					</div>
+				</div>
+				<div class="digit" id="mi">
+					<span class="tit">Minutes</span><br>
+					<span class="flo" id="hh">:</span>
+					<div class="flo" id="min">
+						60
+					</div>
+				</div>
+				<div class="digit" id="s">
+					<span class="tit">Seconds</span><br>
+					<span class="flo" id="mimi">:</span>
+					<div class="flo" id="sec">
+						60
+					</div>
+				</div>
+				<div class="digit" id="ms">
+					<span class="tit">Milliseconds</span><br>
+					<span class="flo" id="ss">:</span>
+					<div class="flo" id="msec">
+						999
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="dl" class="di">
+			<div id="neue1">
+				<br>
+				<label for="date">1. Datum:</label>
+				<input type="date" id="date" class="in">
+				<br><br>
+				<label for="anlass">Anlass:</label>
+				<input type="text" id="anlass" class="in">
+				<br><br>
+				<label for="name">Name:</label>
+				<input type="text" id="name" class="in" placeholder="Für">
+				<br><br>
+				<input type="submit" value="Fertig" onclick="but()">
+				<br><br>
+				<label id="cp" onclick="cp()" for="fertig">Kopieren:</label>
+				<input id="fertig" class="in">
+				<br><br>
+			</div>
+			<button class="bu" onclick="neu()">Hier klicken um eigenen Daten einzugeben</button>
+		</div>
+		<div id="dr" class="di">
+			<div id="neue2">
+				<p></p>
+				<div class="center"><p id="dis">Display?</p></div>
+				<input type="checkbox" id="months" onchange="dis(this)">
+				<label for="months">Months</label>
+				<br>
+				<input type="checkbox" id="days" onchange="dis(this)">
+				<label for="days">Days</label>
+				<br>
+				<input type="checkbox" id="hours" onchange="dis(this)">
+				<label for="hours">Hours</label>
+				<br>
+				<input type="checkbox" id="minutes" onchange="dis(this)">
+				<label for="minutes">Minutes</label>
+				<br>
+				<input type="checkbox" id="seconds" onchange="dis(this)">
+				<label for="seconds">Seconds</label>
+				<br>
+				<input type="checkbox" id="milliseconds" onchange="dis(this)">
+				<label for="milliseconds">Milliseconds</label>
+				<br>
+			</div>
+			<button class="bu" onclick="opt()">Display Optionen</button>
+		</div>
+		<div id="dm">
+			<div class="center">
+				<div id="crea">
+					Created by Julian Ob.
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
