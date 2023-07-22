@@ -12,8 +12,32 @@
 		<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 		<script src="js/javascript.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<noscript>
+			<style>
+				.njs {
+					display: none;
+				}
+				.bu:hover .njs {
+					display: block;
+				}
+
+				.bu:hover .yjs {
+					display: none;
+				}
+
+				#c {
+					text-align: center;
+					color: darkred;
+				}
+			</style>
+		</noscript>
 	</head>
 	<body>
+		<noscript>
+			<h1 id="c">
+				This page requires JavaScript
+			</h1>
+		</noscript>
 		<div id="cent">
 			<span id="hea">Zeit bis zum <span id="wh0">1</span>. <span id="anlass0">What so ever</span> von <span id="name0">Wem auch immer:</span> </span>
 		</div>
@@ -80,7 +104,12 @@
 				<input id="fertig" class="in">
 				<br><br>
 			</div>
-			<button class="bu" onclick="neu()">Hier klicken um eigenen Daten einzugeben</button>
+			<button class="bu" onclick="neu()">
+				<span class="yjs">Hier klicken um eigenen Daten einzugeben</span>
+				<noscript class="njs">
+					This feature requires JavaScript
+				</noscript>
+			</button>
 		</div>
 		<div id="dr" class="di">
 			<div id="neue2">
@@ -105,7 +134,12 @@
 				<label for="milliseconds">Milliseconds</label>
 				<br>
 			</div>
-			<button class="bu" onclick="opt()">Display Optionen</button>
+			<button class="bu" onclick="opt()">
+				<span class="yjs">Display Optionen</span>
+				<noscript class="njs">
+					This feature requires JavaScript
+				</noscript>
+			</button>
 		</div>
 		<div id="dm">
 			<div class="center">
