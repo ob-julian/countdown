@@ -1,89 +1,54 @@
 // const host = window.location.host;
 // host is a relic from when the site reachable under multiple ddns domains
 const host = "oberhofer.ddns.net";
+let interval;
+
 let dat,
-    months = false,
-    days = false,
-    hours = false,
-    minutes = false,
-    seconds = false,
-    milliseconds = false,
+    showMonths = false,
+    showDays = false,
+    showHours = false,
+    showMinutes = false,
+    showSeconds = false,
+    showMilliseconds = false,
     count = 6,
     fix1 = false,
     fix2 = false;
 
 window.addEventListener('DOMContentLoaded', function () {
-    let tmp;
 
-    tmp = localStorage.getItem("a1");
-    if (tmp === null) {
-        localStorage.setItem("a1", "false");
-    } else if (tmp === "true") {
-        months = true;
-        document.getElementById("months").checked = true;
-        count--;
-    }
+    function setElementVisibility(elementId) {
+        let storageShowElement = (localStorage.getItem(elementId) || "true") === "true";
+        // invers because the checkbox is checked if the element is not shown
+        const buttonId = elementId.substring(4).toLowerCase();
+        document.getElementById(buttonId).checked = !storageShowElement;
 
-    tmp = localStorage.getItem("a2");
-    if (tmp === null) {
-        localStorage.setItem("a2", "false");
-    } else if (tmp === "true") {
-        days = true;
-        document.getElementById("days").checked = true;
-        count--;
-    }
-
-    tmp = localStorage.getItem("a3");
-    if (tmp === null) {
-        localStorage.setItem("a3", "false");
-    } else if (tmp === "true") {
-        hours = true;
-        document.getElementById("hours").checked = true;
-        count--;
-    }
-
-    tmp = localStorage.getItem("a4");
-    if (tmp === null) {
-        localStorage.setItem("a4", "false");
-    } else if (tmp === "true") {
-        minutes = true;
-        document.getElementById("minutes").checked = true;
-        count--;
-    }
-
-    tmp = localStorage.getItem("a5");
-    if (tmp === null) {
-        localStorage.setItem("a5", "false");
-    } else if (tmp === "true") {
-        seconds = true;
-        document.getElementById("seconds").checked = true;
-        count--;
-    }
-
-    if (count > 1) {
-        tmp = localStorage.getItem("a6");
-        if (tmp === null) {
-            localStorage.setItem("a6", "false");
-        } else if (tmp === "true") {
-            milliseconds = true;
-            document.getElementById("milliseconds").checked = true;
+        if (!storageShowElement) {
             count--;
         }
+
+        return storageShowElement;
     }
 
+
+    showMonths = setElementVisibility("showMonths");
+    showDays = setElementVisibility("showDays");
+    showHours = setElementVisibility("showHours");
+    showMinutes = setElementVisibility("showMinutes");
+    showSeconds = setElementVisibility("showSeconds");
+    showMilliseconds = setElementVisibility("showMilliseconds");
 
     // logic for data input for the countdown
     if (window.location.search !== '') {
         const query = window.location.search;
-        const queryCleaned = query.replace("?", "");
+        const queryCleaned = query.substring(1);
         let querySplit = queryCleaned.split("=rtz=og");
         for (let x in querySplit)
             querySplit[x] = decodeURI(querySplit[x]);
-        document.getElementById("anlass0").innerHTML = querySplit[1];
-        document.getElementById("name0").innerHTML = querySplit[2];
-        document.getElementsByTagName('title')[0].innerHTML = "Countdown " + querySplit[2] + "'s " + querySplit[1];
+        document.getElementById("anlass0").innerText = querySplit[1];
+        document.getElementById("name0").innerText = querySplit[2];
+        document.getElementsByTagName('title')[0].innerText = "Countdown " + querySplit[2] + "'s " + querySplit[1];
         if (querySplit[3] === "imp") {
-            document.getElementById("dl").innerHTML = "<div id='neue1'></div>";
+            document.getElementById("dl").innerText = "<div id='neue1'></div>";
         }
         const date = querySplit[0].split("-");
         const dateMapped = date.map(Number);
@@ -95,14 +60,46 @@ window.addEventListener('DOMContentLoaded', function () {
             xx++;
         }
         while (da.getTime() < akt.getTime());
-        document.getElementById("wh0").innerHTML = (xx - 1).toString();
+        document.getElementById("wh0").innerText = (xx - 1).toString();
         dat = da;
         los();
-        setInterval(los, 1);
+        interval = setIntervalBasedOnPrecision();
     } else {
         neu();
     }
 });
+
+function setIntervalBasedOnPrecision() {
+    if (showMilliseconds) {
+        return setInterval(los, 1);
+    }
+    let delay = new Date().getMilliseconds();
+    if (showSeconds) {
+        return setTimedInterval(1000, delay);
+    }
+    delay += new Date().getSeconds() * 1000;
+    if (showMinutes) {
+        return setTimedInterval(60000, delay);
+    }
+    delay += new Date().getMinutes() * 60000;
+    if (showHours) {
+        return setTimedInterval(3600000, delay);
+    }
+    delay += new Date().getHours() * 3600000;
+    if (showDays) {
+        return setTimedInterval(86400000, delay);
+    }
+    delay += new Date().getDate() * 86400000;
+    if (showMonths) {
+        return setTimedInterval(2592000000, delay);
+    }
+}
+
+function setTimedInterval(interval, delay) {
+    return setTimeout(() => {
+        return setInterval(los, interval);
+    }, interval - delay);
+}
 
 los = function () {
     let akt = new Date;
@@ -110,18 +107,12 @@ los = function () {
         // calculate the difference between the current date and the date of the event
 
         // starting with just getting the different timings
-        let aktM = akt.getMonth();
-        let datM = dat.getMonth() - aktM;
-        let aktD = akt.getDate();
-        let datD = dat.getDate() - aktD;
-        let aktH = akt.getHours();
-        let datH = dat.getHours() - aktH;
-        let aktMi = akt.getMinutes();
-        let datMi = dat.getMinutes() - aktMi;
-        let aktS = akt.getSeconds();
-        let datS = dat.getSeconds() - aktS;
-        let aktMs = akt.getMilliseconds();
-        let datMs = dat.getMilliseconds() - aktMs;
+        let datM = dat.getMonth() - akt.getMonth();
+        let datD = dat.getDate() - akt.getDate();
+        let datH = dat.getHours() - akt.getHours();
+        let datMi = dat.getMinutes() - akt.getMinutes();
+        let datS = dat.getSeconds() - akt.getSeconds();
+        let datMs = dat.getMilliseconds() - akt.getMilliseconds();
 
         // make sure that the difference is positive
         while (datMs < 0) {
@@ -148,61 +139,44 @@ los = function () {
             datM += 12;
         }
 
-        if (months) {
-            for (let nt = datM; nt > 0; nt--) {
-                datD += monthday((akt.getMonth() + nt) % 12);
+        function changeElement(timeBool, timeId, pointBool, pointId, timeAmount, func) {
+            let returnVal = 0;
+            if (timeBool) {
+                document.getElementById(timeId).style.display = "inline-block";
+                document.getElementById(pointId).style.display = "inline";
+            } else {
+                if (func)
+                    returnVal = func(timeAmount);
+
+                document.getElementById(timeId).style.display = "none";
+                if (pointBool)
+                    document.getElementById(pointId).style.display = "none";
+                else
+                    document.getElementById(pointId).style.display = "inline";
             }
-            document.getElementById("m").style.display = "none";
-            document.getElementById("mm").style.display = "none";
-        } else {
-            document.getElementById("m").style.display = "inline-block";
-            document.getElementById("mm").style.display = "inline";
+            return returnVal;
         }
 
-        if (days) {
-            datH += datD * 24;
-            document.getElementById("d").style.display = "none";
-            if (months) document.getElementById("dd").style.display = "none";
-            else document.getElementById("dd").style.display = "inline";
-        } else {
-            document.getElementById("d").style.display = "inline-block";
-            document.getElementById("dd").style.display = "inline";
-        }
+        datD += changeElement(showMonths, "showMonths", true, "mm", datM, (x) => {
+            let cum = 0;
+            for (let nt = x; nt > 0; nt--) {
+                cum += monthday((akt.getMonth() + nt) % 12);
+            }
+            return cum;
+        });
 
-        if (hours) {
-            datMi += datH * 60;
-            document.getElementById("h").style.display = "none";
-            if (months && days) document.getElementById("hh").style.display = "none";
-            else document.getElementById("hh").style.display = "inline";
-        } else {
-            document.getElementById("h").style.display = "inline-block";
-            document.getElementById("hh").style.display = "inline";
-        }
+        datH += changeElement(showDays, "showDays", showMonths, "dd", datD, (x) => x * 24);
 
-        if (minutes) {
-            datS += datMi * 60;
-            document.getElementById("mi").style.display = "none";
-            if (months && days && hours) document.getElementById("mimi").style.display = "none";
-            else document.getElementById("mimi").style.display = "inline";
-        } else {
-            document.getElementById("mi").style.display = "inline-block";
-            document.getElementById("mimi").style.display = "inline";
-        }
+        datMi += changeElement(showHours, "showHours", showMonths && showDays, "hh", datH, (x) => x * 60);
 
-        if (seconds) {
-            datMs += datS * 1000;
-            document.getElementById("s").style.display = "none";
-            if (months && days && hours && minutes) document.getElementById("ss").style.display = "none";
-            else document.getElementById("ss").style.display = "inline";
-        } else {
-            document.getElementById("s").style.display = "inline-block";
-            document.getElementById("ss").style.display = "inline";
-        }
+        datS += changeElement(showMinutes, "showMinutes", showMonths && showDays && showHours, "mimi", datMi, (x) => x * 60);
 
-        if (milliseconds) {
-            document.getElementById("ms").style.display = "none";
+        datMs += changeElement(showSeconds, "showSeconds", showMonths && showDays && showHours && showMinutes, "ss", datS, (x) => x * 1000);
+
+        if (showMilliseconds) {
+            document.getElementById("showMilliseconds").style.display = "inline-block";
         } else {
-            document.getElementById("ms").style.display = "inline-block";
+            document.getElementById("showMilliseconds").style.display = "none";
         }
 
         if (datMs === 1000) datMs = "000";
@@ -244,7 +218,7 @@ opt = function () {
     fix2 = !fix2;
 }
 
-const le = leapYear(new Date().getFullYear());
+const isNotLeapYear = leapYear(new Date().getFullYear());
 
 function leapYear(year) {
     if ((year % 100 === 0) && (year % 400 !== 0)) return false;
@@ -252,7 +226,7 @@ function leapYear(year) {
 }
 
 function leap() {
-    if (le) return 29;
+    if (isNotLeapYear) return 29;
     else return 28;
 }
 
@@ -283,29 +257,43 @@ let disabledStatus = false,
     alle = ["months", "days", "hours", "minutes", "seconds", "milliseconds"];
 
 dis = function (hh) {
-    if (hh.id === "months") {
-        months = document.getElementById(hh.id).checked;
-        localStorage.setItem("a1", document.getElementById(hh.id).checked);
-    } else if (hh.id === "days") {
-        days = document.getElementById(hh.id).checked;
-        localStorage.setItem("a2", document.getElementById(hh.id).checked);
-    } else if (hh.id === "hours") {
-        hours = document.getElementById(hh.id).checked;
-        localStorage.setItem("a3", document.getElementById(hh.id).checked);
-    } else if (hh.id === "minutes") {
-        minutes = document.getElementById(hh.id).checked;
-        localStorage.setItem("a4", document.getElementById(hh.id).checked);
-    } else if (hh.id === "seconds") {
-        seconds = document.getElementById(hh.id).checked;
-        localStorage.setItem("a5", document.getElementById(hh.id).checked);
-    } else if (hh.id === "milliseconds") {
-        milliseconds = document.getElementById(hh.id).checked;
-        localStorage.setItem("a6", document.getElementById(hh.id).checked);
+    // invers because the checkbox is checked if the element is not shown
+    const change = !hh.checked;
+
+    switch (hh.id) {
+        case "months":
+            showMonths = change;
+            localStorage.setItem("showMonths", change);
+            break;
+        case "days":
+            showDays = change;
+            localStorage.setItem("showDays", change);
+            break;
+        case "hours":
+            showHours = change;
+            localStorage.setItem("showHours", change);
+            break;
+        case "minutes":
+            showMinutes = change;
+            localStorage.setItem("showMinutes", change);
+            break;
+        case "seconds":
+            showSeconds = change;
+            localStorage.setItem("showSeconds", change);
+            break;
+        case "milliseconds":
+            showMilliseconds = change;
+            localStorage.setItem("showMilliseconds", change);
+            break;
     }
-    if (document.getElementById(hh.id).checked)
+
+    if (!change)
         count--;
-    else count += 1;
-    if (count === 1) {
+    else
+        count += 1;
+
+    if (count <= 1) {
+        // force the user to have at least one element visible
         for (let ii in alle) {
             if (!document.getElementById(alle[ii]).checked) {
                 document.getElementById(alle[ii]).setAttribute("disabled", "");
@@ -318,34 +306,30 @@ dis = function (hh) {
         if (disabledStatus) document.getElementById(disabledElement).removeAttribute("disabled");
         disabledStatus = false;
     }
+
+    // update the interval to reflect the new precision
+    clearInterval(interval);
+    los();
+    interval = setIntervalBasedOnPrecision();
 }
 
 function monthday(gg) {
     switch (gg) {
         case 0:
+        case 2:
+        case 4:
+        case 6:
+        case 7:
+        case 9:
+        case 11:
             return 31;
         case 1:
             return leap();
-        case 2:
-            return 31;
         case 3:
-            return 30;
-        case 4:
-            return 31;
         case 5:
-            return 30;
-        case 6:
-            return 31;
-        case 7:
-            return 31;
         case 8:
-            return 30;
-        case 9:
-            return 31;
         case 10:
             return 30;
-        case 11:
-            return 31;
     }
 }
 
