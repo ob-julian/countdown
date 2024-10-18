@@ -157,7 +157,11 @@ los = function () {
             return returnVal;
         }
 
-        datD += changeElement(showMonths, "showMonths", true, "mm", datM, (x) => {
+        let cummulativeBool = true;
+        function andCummulativeBool(bool) {
+            cummulativeBool = cummulativeBool && bool;
+        }
+        datD += changeElement(showMonths, "showMonths", cummulativeBool, "mm", datM, (x) => {
             let cum = 0;
             for (let nt = x; nt > 0; nt--) {
                 cum += monthday((akt.getMonth() + nt) % 12);
@@ -165,13 +169,17 @@ los = function () {
             return cum;
         });
 
-        datH += changeElement(showDays, "showDays", showMonths, "dd", datD, (x) => x * 24);
+        andCummulativeBool(!showMonths);
+        datH += changeElement(showDays, "showDays", cummulativeBool, "dd", datD, (x) => x * 24);
 
-        datMi += changeElement(showHours, "showHours", showMonths && showDays, "hh", datH, (x) => x * 60);
+        andCummulativeBool(!showDays);
+        datMi += changeElement(showHours, "showHours", cummulativeBool, "hh", datH, (x) => x * 60);
 
-        datS += changeElement(showMinutes, "showMinutes", showMonths && showDays && showHours, "mimi", datMi, (x) => x * 60);
+        andCummulativeBool(!showHours);
+        datS += changeElement(showMinutes, "showMinutes", cummulativeBool, "mimi", datMi, (x) => x * 60);
 
-        datMs += changeElement(showSeconds, "showSeconds", showMonths && showDays && showHours && showMinutes, "ss", datS, (x) => x * 1000);
+        andCummulativeBool(!showMinutes);
+        datMs += changeElement(showSeconds, "showSeconds", cummulativeBool, "ss", datS, (x) => x * 1000);
 
         if (showMilliseconds) {
             document.getElementById("showMilliseconds").style.display = "inline-block";
